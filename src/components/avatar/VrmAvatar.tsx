@@ -4,11 +4,12 @@ import { useVrmModel } from '@/hooks/useVrmModel';
 interface VrmAvatarProps {
   isActive: boolean;
   isThinking: boolean;
+  modelUrl: string;
 }
 
-export function VrmAvatar({ isActive, isThinking }: VrmAvatarProps) {
+export function VrmAvatar({ isActive, isThinking, modelUrl }: VrmAvatarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { vrmState, error, setAnimation } = useVrmModel(containerRef);
+  const { vrmState, error, setAnimation } = useVrmModel(containerRef, modelUrl);
 
   useEffect(() => {
     if (vrmState !== 'ready') return;

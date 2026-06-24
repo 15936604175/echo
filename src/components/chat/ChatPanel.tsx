@@ -7,6 +7,7 @@ interface ChatPanelProps {
   side: 'sender' | 'receiver';
   userName: string;
   avatarName: string;
+  modelUrl: string;
   messages: Message[];
   isActive: boolean;
   isLoading: boolean;
@@ -23,6 +24,7 @@ export function ChatPanel({
   side,
   userName,
   avatarName,
+  modelUrl,
   messages,
   isActive,
   isLoading,
@@ -39,7 +41,7 @@ export function ChatPanel({
   return (
     <div className={`chat-panel chat-panel-${side}`}>
       <div className="comic-stage">
-        <VrmAvatar isActive={isActive && !isLoading} isThinking={isThinking} />
+        <VrmAvatar isActive={isActive && !isLoading} isThinking={isThinking} modelUrl={modelUrl} />
 
         <div className="comic-bubbles">
           {children}

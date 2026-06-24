@@ -2,9 +2,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 
 type VrmState = 'loading' | 'ready' | 'error';
 
-const MODEL_URL =
-  'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json';
-
 function setupModel(app: any, model: any, w: number, h: number) {
   const modelW = model.internalModel.width;
   const modelH = model.internalModel.height;
@@ -16,7 +13,7 @@ function setupModel(app: any, model: any, w: number, h: number) {
   model.y = 0;
 }
 
-export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>) {
+export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>, modelUrl: string) {
   const [vrmState, setVrmState] = useState<VrmState>('loading');
   const [error, setError] = useState<string | null>(null);
   const appRef = useRef<any>(null);
@@ -60,7 +57,7 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
         });
         appRef.current = app;
 
-        const model = await PIXI.live2d.Live2DModel.from(MODEL_URL);
+        const model = await PIXI.live2d.Live2DModel.from(modelUrl);
         modelRef.current = model;
 
         setupModel(app, model, pxW, pxH);
@@ -106,7 +103,7 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
         container.removeChild(canvasRef.current);
       }
     };
-  }, [containerRef]);
+  }, [containerRef, modelUrl]);
 
   const setAnimation = useCallback((state: 'idle' | 'talking' | 'thinking') => {
     if (!modelRef.current) return;

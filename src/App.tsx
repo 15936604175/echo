@@ -9,6 +9,9 @@ import { NotificationBanner } from '@/components/receiver/NotificationBanner';
 import { ShareModal } from '@/components/chat/ShareModal';
 import type { Personality } from '@/types';
 
+const SENDER_MODEL = 'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json';
+const RECEIVER_MODEL = 'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json';
+
 export default function App() {
   const {
     phase,
@@ -90,6 +93,7 @@ export default function App() {
                   side="sender"
                   userName={sender.name}
                   avatarName="数字人"
+                  modelUrl={SENDER_MODEL}
                   messages={sender.messages}
                   isActive={phase === 'sending'}
                   isLoading={isLoading}
@@ -113,6 +117,7 @@ export default function App() {
                 side="receiver"
                 userName={receiver.name}
                 avatarName="数字人"
+                modelUrl={RECEIVER_MODEL}
                 messages={receiver.messages}
                 isActive={phase === 'receiving'}
                 isLoading={isLoading}
