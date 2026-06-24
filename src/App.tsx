@@ -29,7 +29,7 @@ export default function App() {
   const handleStyleConfirm = useCallback(
     (personality: Personality, customDesc: string) => {
       if (!hasLLMConfig()) {
-        alert('请先在设置中配置 API Key（点击右上角齿轮图标）');
+        alert('请先在设置中配置 API Key');
         return;
       }
       setPersonality(personality);
@@ -66,53 +66,82 @@ export default function App() {
     <div className="app">
       <AppHeader />
 
-      <main className={`app-main phase-${phase}`}>
-        <div className="split-pane">
-          <div className="pane pane-sender">
-            {phase === 'idle' ? (
-              <StyleSelector onConfirm={handleStyleConfirm} />
-            ) : (
-              <ChatPanel
-                side="sender"
-                userName={sender.name}
-                avatarName="数字人"
-                messages={sender.messages}
-                isActive={phase === 'sending'}
-                isLoading={isLoading}
-                showEndButton={phase === 'sending' && sender.messages.length > 0}
-                showSendButton={phase === 'sending'}
-                isThinking={senderThinking}
-                placeholder="输入你的想法..."
-                onSend={sendSenderMessage}
-                onEnd={handleSenderEnd}
-              />
-            )}
-          </div>
-
-          <div className={`pane pane-receiver ${phase === 'receiving' ? '' : 'pane-locked'}`}>
-            <ChatPanel
-              side="receiver"
-              userName={receiver.name}
-              avatarName="数字人"
-              messages={receiver.messages}
-              isActive={phase === 'receiving'}
-              isLoading={isLoading}
-              showEndButton={false}
-              showSendButton={phase === 'receiving'}
-              isThinking={receiverThinking}
-              placeholder={phase === 'receiving' ? '输入你的想法...' : '等待发送端完成对话...'}
-              onSend={sendReceiverMessage}
-            >
-              {showNotification && shareInfo && (
-                <NotificationBanner
-                  shareInfo={shareInfo}
-                  onDismiss={() => {}}
+      <main className="app-main">
+        <div className="phones-container">
+          {/* 发送端手机 */}
+          <div className="phone-frame">
+            <div className="phone-notch" />
+            <div className="phone-screen">
+              {phase === 'idle' ? (
+                <StyleSelector onConfirm={handleStyleConfirm} />
+              ) : (
+                <ChatPanel
+                  side="sender"
+                  userName={sender.name}
+                  avatarName="数字人"
+                  messages={sender.messages}
+                  isActive={phase === 'sending'}
+                  isLoading={isLoading}
+                  showEndButton={phase === 'sending' && sender.messages.length > 0}
+                  showSendButton={phase === 'sending'}
+                  isThinking={senderThinking}
+                  placeholder="说点什么..."
+                  onSend={sendSenderMessage}
+                  onEnd={handleSenderEnd}
                 />
               )}
-            </ChatPanel>
+            </div>
+            <div className="device-label">{sender.name} · 发送端</div>
+          </div>
+
+          {/* 接收端手机 */}
+          <div className="phone-frame">
+            <div className="phone-notch" />
+            <div className={`phone-screen ${phase === 'receiving' ? '' : 'phone-locked'}`}>
+              {phase === 'idle' || phase === 'sending' ? (
+                <div className="waiting-screen">
+                  <div className="waiting-avatar" />
+                  <p className="waiting-text">等待消息传入...</p>
+                </div>
+              ) : (
+                <ChatPanel
+                  side="receiver"
+                  userName={receiver.name}
+                  avatarName="数字人"
+                  messages={receiver.messages}
+                  isActive={phase === 'receiving'}
+                  isLoading={isLoading}
+                  showEndButton={false}
+                  showSendButton={phase === 'receiving'}
+                  isThinking={receiverThinking}
+                  placeholder="说点什么..."
+                  onSend={sendReceiverMessage}
+                >
+                  {showNotification && shareInfo && (
+                    <NotificationBanner
+                      shareInfo={shareInfo}
+                      onDismiss={() => {}}
+                    />
+                  )}
+                </ChatPanel>
+              )}
+            </div>
+            <div className="device-label">{receiver.name} · 接收端</div>
           </div>
         </div>
       </main>
+
+      {/* 底部状态栏 */}
+      <footer className="app-footer">
+        <span className={`status-dot ${phase}`} />
+        <span className="status-text">
+          {phase === 'idle' && '选择风格开始对话'}
+          {phase === 'sending' && `${sender.name} 正在倾诉中 — ${sender.messages.length} 条消息`}
+          {phase === 'review' && '对话已结束，确认是否分享'}
+          {phase === 'receiving' && `${receiver.name} 正在接收中 — ${receiver.messages.length} 条消息`}
+          {phase === 'end' && '会话已结束'}
+        </span>
+      </footer>
 
       {phase === 'review' && (
         <ShareModal
@@ -136,19 +165,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      <footer className="app-footer">
-        <span className={`status-badge badge-${phase}`}>
-          {phase === 'idle' && '等待开始'}
-          {phase === 'sending' && `${sender.name} 正在倾诉中`}
-          {phase === 'review' && '确认分享'}
-          {phase === 'receiving' && `${receiver.name} 正在接收中`}
-          {phase === 'end' && '会话已结束'}
-        </span>
-        <span>
-          {sender.name}: {sender.messages.length} 条 | {receiver.name}: {receiver.messages.length} 条
-        </span>
-      </footer>
     </div>
   );
 }

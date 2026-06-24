@@ -22,7 +22,7 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
     const height = container.clientHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a2e);
+    scene.background = new THREE.Color(0xf9f7f2);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 1.2, 3);
@@ -34,17 +34,17 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xfff8f0, 0.7);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xfff8f0, 0.9);
     directionalLight.position.set(1, 3, 2);
     scene.add(directionalLight);
 
     const geometry = new THREE.CapsuleGeometry(0.3, 0.6, 4, 8);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x6c63ff,
-      roughness: 0.4,
-      metalness: 0.1,
+      color: 0xd4a373,
+      roughness: 0.3,
+      metalness: 0.05,
     });
     const placeholder = new THREE.Mesh(geometry, material);
     placeholder.position.y = 1;
