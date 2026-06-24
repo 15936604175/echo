@@ -4,37 +4,41 @@ interface ChatBubbleProps {
   message: Message;
   userName: string;
   avatarName?: string;
+  index?: number;
+  total?: number;
 }
 
-function formatTime(timestamp: number): string {
-  const date = new Date(timestamp);
-  return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-}
-
-export function ChatBubble({ message, userName, avatarName }: ChatBubbleProps) {
+export function ChatBubble({
+  message,
+  userName,
+  avatarName,
+  index = 0,
+  total = 1,
+}: ChatBubbleProps) {
   const isUser = message.role === 'sender' || message.role === 'receiver';
   const isAvatar = message.role === 'avatar';
   const isSystem = message.role === 'system';
 
-  const displayName = isSystem
-    ? '系统'
-    : isAvatar
-      ? avatarName || '数字人'
-      : userName;
+  if (isSystem) {
+    return (
+      <div className={`comic-bubble comic-system ${message.isError ? 'bubble-error' : ''}`}>
+        <div className="comic-bubble-text">{message.content}</div>
+      </div>
+    );
+  }
 
-  const bubbleClass = isSystem
-    ? 'bubble-system'
-    : isAvatar
-      ? 'bubble-avatar'
-      : 'bubble-user';
+  const side = isUser ? 'right' : 'left';
+  const label = isUser ? userName : avatarName || '数字人';
+  const isLatest = index === total - 1;
 
   return (
-    <div className={`chat-bubble ${bubbleClass} ${message.isError ? 'bubble-error' : ''}`}>
-      <div className="bubble-meta">
-        <span className="bubble-name">{displayName}</span>
-        <span className="bubble-time">{formatTime(message.timestamp)}</span>
-      </div>
-      <div className="bubble-content">{message.content}</div>
+    <div
+      className={`comic-bubble comic-${side} ${isLatest ? 'comic-latest' : 'comic-old'}`}
+      style={{ zIndex: index + 1 }}
+    >
+      <div className="comic-bubble-label">{label}</div>
+      <div className="comic-bubble-text">{message.content}</div>
+      <div className={`comic-tail comic-tail-${side}`} />
     </div>
   );
 }

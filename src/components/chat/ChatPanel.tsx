@@ -34,39 +34,33 @@ export function ChatPanel({
   onEnd,
   children,
 }: ChatPanelProps) {
+  const activeMessages = messages.filter((m) => m.role !== 'system').slice(-3);
+
   return (
     <div className={`chat-panel chat-panel-${side}`}>
-      <div className="panel-header">
-        <span className="panel-name">{userName}</span>
-        <span className={`panel-status ${isActive ? 'status-active' : 'status-idle'}`}>
-          {isActive ? '在线' : '等待中'}
-        </span>
-      </div>
+      <div className="comic-stage">
+        <VrmAvatar isActive={isActive && !isLoading} isThinking={isThinking} />
 
-      <VrmAvatar isActive={isActive && !isLoading} isThinking={isThinking} />
-
-      <div className="chat-messages">
-        {children}
-        {messages.length === 0 && (
-          <div className="chat-empty">
-            {isActive ? '开始你的对话...' : '等待对方开始对话'}
-          </div>
-        )}
-        {messages.map((msg) => (
-          <ChatBubble
-            key={msg.id}
-            message={msg}
-            userName={userName}
-            avatarName={avatarName}
-          />
-        ))}
-        {isLoading && (
-          <div className="chat-typing">
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-          </div>
-        )}
+        <div className="comic-bubbles">
+          {children}
+          {isLoading && (
+            <div className="comic-typing">
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+            </div>
+          )}
+          {activeMessages.map((msg, i) => (
+            <ChatBubble
+              key={msg.id}
+              message={msg}
+              userName={userName}
+              avatarName={avatarName}
+              index={i}
+              total={activeMessages.length}
+            />
+          ))}
+        </div>
       </div>
 
       <ChatInput
