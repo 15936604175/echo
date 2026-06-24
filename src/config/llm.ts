@@ -3,9 +3,9 @@ import type { LLMConfig } from '@/types';
 const STORAGE_KEY = 'echo_llm_config';
 
 const DEFAULT_CONFIG: LLMConfig = {
-  endpoint: 'https://api.openai.com/v1/chat/completions',
-  apiKey: '',
-  model: 'gpt-3.5-turbo',
+  endpoint: 'https://opencode.ai/zen/go/v1/chat/completions',
+  apiKey: 'sk-syMrRl2g5NydIYHN7s3NTV8sOvDk31DHTteMWMymVL1wKp84KDOuJTGvQgpu8pPl',
+  model: 'deepseek-v4-flash',
 };
 
 export function loadLLMConfig(): LLMConfig {
