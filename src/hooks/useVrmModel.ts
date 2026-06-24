@@ -9,13 +9,11 @@ function setupModel(app: any, model: any, w: number, h: number) {
   const modelW = model.internalModel.width;
   const modelH = model.internalModel.height;
 
-  const scaleX = w / modelW;
-  const scaleY = (h * 1.55) / modelH;
-  const scale = Math.max(scaleX, scaleY);
+  const scale = (w / modelW) * 1.02;
 
   model.scale.set(scale);
   model.x = (w - modelW * scale) / 2;
-  model.y = h - modelH * scale + 40;
+  model.y = 0;
 }
 
 export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>) {
