@@ -4,13 +4,13 @@ import type { AppState, AppActions, Phase, Personality, Message, ShareInfo } fro
 const initialState: AppState = {
   phase: 'idle',
   sender: {
-    name: '小明',
+    name: '小美',
     messages: [],
     personality: null,
     customPersonalityDesc: '',
   },
   receiver: {
-    name: '小明妈妈',
+    name: '小美妈妈',
     messages: [],
   },
   conversationSummary: '',
