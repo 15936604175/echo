@@ -18,7 +18,6 @@ export function NotificationBanner({ shareInfo, onDismiss }: NotificationBannerP
         <p className="notification-text">
           {shareInfo.targetName} 分享了对话内容 {time}
         </p>
-        <p className="notification-subtext">点击查看并回复</p>
       </div>
       <button className="notification-dismiss" onClick={onDismiss}>
         ✕
