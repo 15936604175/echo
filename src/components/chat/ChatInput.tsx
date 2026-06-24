@@ -5,6 +5,7 @@ interface ChatInputProps {
   isLoading: boolean;
   showEndButton: boolean;
   showSendButton: boolean;
+  sendLabel?: string;
   onSend: (content: string) => void;
   onEnd?: () => void;
   placeholder?: string;
@@ -15,6 +16,7 @@ export function ChatInput({
   isLoading,
   showEndButton,
   showSendButton,
+  sendLabel = '发送',
   onSend,
   onEnd,
   placeholder = '输入你的想法...',
@@ -24,10 +26,10 @@ export function ChatInput({
 
   const handleSend = () => {
     const content = input.trim();
-    if (!content || disabled || isLoading) return;
+    if (disabled || isLoading) return;
+    if (!content && sendLabel !== '下一步') return;
     onSend(content);
     setInput('');
-    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -52,11 +54,11 @@ export function ChatInput({
       <div className="chat-input-buttons">
         {showSendButton && (
           <button
-            className="btn btn-send"
+            className={`btn ${sendLabel === '下一步' ? 'btn-next' : 'btn-send'}`}
             onClick={handleSend}
-            disabled={disabled || isLoading || !input.trim()}
+            disabled={disabled || isLoading || (sendLabel !== '下一步' && !input.trim())}
           >
-            {isLoading ? '发送中...' : '发送'}
+            {isLoading ? '发送中...' : sendLabel}
           </button>
         )}
         {showEndButton && (

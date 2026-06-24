@@ -18,6 +18,7 @@ interface ChatPanelProps {
   onSend: (content: string) => void;
   onEnd?: () => void;
   children?: React.ReactNode;
+  sendLabel?: string;
 }
 
 export function ChatPanel({
@@ -32,6 +33,7 @@ export function ChatPanel({
   showSendButton,
   isThinking,
   placeholder,
+  sendLabel,
   onSend,
   onEnd,
   children,
@@ -70,6 +72,7 @@ export function ChatPanel({
         isLoading={isLoading}
         showEndButton={showEndButton}
         showSendButton={showSendButton}
+        sendLabel={sendLabel}
         onSend={onSend}
         onEnd={onEnd}
         placeholder={placeholder}

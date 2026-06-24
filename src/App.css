@@ -505,12 +505,25 @@ body {
   background: #ede8df;
 }
 
-.btn-send {
+.btn-send,
+.btn-next {
   background: var(--primary);
   color: #fff;
   padding: 8px 20px;
   border-radius: 16px;
   font-size: 13px;
+}
+
+.btn-next {
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  animation: pulseBtn 2s infinite;
+}
+
+@keyframes pulseBtn {
+  0%, 100% { box-shadow: 0 0 0 0 var(--primary-glow); }
+  50% { box-shadow: 0 0 0 6px transparent; }
 }
 
 .btn-end {

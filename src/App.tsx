@@ -166,7 +166,8 @@ export default function App() {
                   showEndButton={senderEndVisible}
                   showSendButton={phase === 'sending' && !senderEndVisible}
                   isThinking={senderThinking}
-                  placeholder={isDemo ? '点击发送推进对话' : '说点什么...'}
+                  placeholder={isDemo ? '点击下一步推进对话' : '说点什么...'}
+                  sendLabel={isDemo ? '下一步' : undefined}
                   onSend={handleSenderSend}
                   onEnd={handleSenderEnd}
                 />
@@ -189,7 +190,8 @@ export default function App() {
                 showEndButton={false}
                 showSendButton={phase === 'receiving' && demoRecvStep < demoRecvScript.current.length}
                 isThinking={receiverThinking}
-                placeholder={isDemo && phase === 'receiving' ? '点击发送推进对话' : phase === 'receiving' ? '说点什么...' : '等待小美分享对话...'}
+                placeholder={isDemo && phase === 'receiving' ? '点击下一步推进对话' : phase === 'receiving' ? '说点什么...' : '等待小美分享对话...'}
+                sendLabel={isDemo && phase === 'receiving' ? '下一步' : undefined}
                 onSend={handleReceiverSend}
               />
             </div>
