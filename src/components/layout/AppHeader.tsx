@@ -14,7 +14,7 @@ export function AppHeader() {
   return (
     <>
       <header className="app-header">
-        <h1 className="app-title">Echo - 关系破冰</h1>
+        <h1 className="app-title">Echo - 回声</h1>
         <div className="header-actions">
           <button
             className="btn btn-icon"
