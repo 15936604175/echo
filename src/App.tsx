@@ -5,7 +5,6 @@ import { hasLLMConfig } from '@/config/llm';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { StyleSelector } from '@/components/sender/StyleSelector';
-import { NotificationBanner } from '@/components/receiver/NotificationBanner';
 import { ShareModal } from '@/components/chat/ShareModal';
 import type { Personality } from '@/types';
 
@@ -74,7 +73,6 @@ export default function App() {
 
   const senderThinking = isLoading && phase === 'sending';
   const receiverThinking = isLoading && phase === 'receiving';
-  const showNotification = shareInfo && phase === 'receiving';
 
   return (
     <div className="app">
@@ -126,14 +124,7 @@ export default function App() {
                 isThinking={receiverThinking}
                 placeholder={phase === 'receiving' ? '说点什么...' : '等待小美分享对话...'}
                 onSend={sendReceiverMessage}
-              >
-                {showNotification && shareInfo && (
-                  <NotificationBanner
-                    shareInfo={shareInfo}
-                    onDismiss={() => {}}
-                  />
-                )}
-              </ChatPanel>
+              />
             </div>
             <div className="device-label">{receiver.name} · 接收端</div>
           </div>
