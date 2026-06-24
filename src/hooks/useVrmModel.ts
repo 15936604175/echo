@@ -5,6 +5,19 @@ type VrmState = 'loading' | 'ready' | 'error';
 const MODEL_URL =
   'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json';
 
+function setupModel(app: any, model: any, w: number, h: number) {
+  const modelW = model.internalModel.width;
+  const modelH = model.internalModel.height;
+
+  const scaleX = w / modelW;
+  const scaleY = (h * 1.55) / modelH;
+  const scale = Math.max(scaleX, scaleY);
+
+  model.scale.set(scale);
+  model.x = (w - modelW * scale) / 2;
+  model.y = h - modelH * scale + 40;
+}
+
 export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>) {
   const [vrmState, setVrmState] = useState<VrmState>('loading');
   const [error, setError] = useState<string | null>(null);
@@ -15,6 +28,12 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = container.clientWidth || 320;
+    const cssH = container.clientHeight || 400;
+    const pxW = Math.round(cssW * dpr);
+    const pxH = Math.round(cssH * dpr);
 
     const canvas = document.createElement('canvas');
     canvas.style.width = '100%';
@@ -31,13 +50,11 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
         const PIXI = (window as any).PIXI;
         if (!PIXI) throw new Error('PIXI not loaded');
 
-        const w = container.clientWidth || 320;
-        const h = container.clientHeight || 180;
-
         app = new PIXI.Application({
           view: canvas,
-          width: w,
-          height: h,
+          width: pxW,
+          height: pxH,
+          resolution: dpr,
           transparent: true,
           backgroundAlpha: 0,
           antialias: true,
@@ -48,14 +65,7 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
         const model = await PIXI.live2d.Live2DModel.from(MODEL_URL);
         modelRef.current = model;
 
-        const modelW = model.internalModel.width;
-        const modelH = model.internalModel.height;
-        const scale = Math.min(w / modelW, h / modelH) * 0.85;
-
-        model.scale.set(scale);
-        model.x = (w - modelW * scale) / 2;
-        model.y = (h - modelH * scale) / 2 - 15;
-
+        setupModel(app, model, pxW, pxH);
         app.stage.addChild(model);
 
         if (!cancelled) setVrmState('ready');
@@ -71,16 +81,13 @@ export function useVrmModel(containerRef: React.RefObject<HTMLDivElement | null>
 
     const handleResize = () => {
       if (!app || !modelRef.current || !container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      app.renderer.resize(w, h);
-      const model = modelRef.current;
-      const mW = model.internalModel.width;
-      const mH = model.internalModel.height;
-      const s = Math.min(w / mW, h / mH) * 0.85;
-      model.scale.set(s);
-      model.x = (w - mW * s) / 2;
-      model.y = (h - mH * s) / 2 - 15;
+      const cW = container.clientWidth;
+      const cH = container.clientHeight;
+      const pW = Math.round(cW * dpr);
+      const pH = Math.round(cH * dpr);
+      app.renderer.resolution = dpr;
+      app.renderer.resize(pW, pH);
+      setupModel(app, modelRef.current, pW, pH);
     };
     window.addEventListener('resize', handleResize);
 
