@@ -41,7 +41,7 @@ export async function callLLM(messages: LLMMessage[]): Promise<string> {
     model: config.model,
     messages,
     temperature: 0.7,
-    max_tokens: 1000,
+    max_tokens: 4096,
   });
 
   let lastError: Error | null = null;
@@ -58,7 +58,7 @@ export async function callLLM(messages: LLMMessage[]): Promise<string> {
           },
           body,
         },
-        15000
+        30000
       );
 
       if (!response.ok) {
@@ -70,7 +70,9 @@ export async function callLLM(messages: LLMMessage[]): Promise<string> {
       }
 
       const data: LLMResponse = await response.json();
-      return data.choices[0]?.message?.content || '';
+      const content = data.choices[0]?.message?.content;
+      if (content) return content;
+      return '（我正在整理思绪，请稍等片刻后重新发送...）';
     } catch (err) {
       lastError = err as Error;
       if (err instanceof LLMError && err.statusCode === 429) {
