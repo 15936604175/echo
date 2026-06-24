@@ -142,9 +142,46 @@ export function useConversation() {
     }
   }, [sender, setConversationSummary]);
 
+  const startReceiverConversation = useCallback(async () => {
+    setLoading(true);
+    try {
+      const personality = sender.personality || 'warm';
+      const systemPrompt = buildReceiverSystemPrompt(
+        sender.name,
+        receiver.name,
+        conversationSummary,
+        personality,
+        sender.customPersonalityDesc
+      );
+
+      const reply = await callLLMWithHistory(systemPrompt, []);
+
+      const avatarMsg: Message = {
+        id: uuidv4(),
+        role: 'avatar',
+        content: reply,
+        timestamp: Date.now(),
+      };
+      addMessage('receiver', avatarMsg);
+    } catch (err: any) {
+      const errorMsg: Message = {
+        id: uuidv4(),
+        role: 'system',
+        content: err.message || '数字人暂时不在线',
+        timestamp: Date.now(),
+        isError: true,
+      };
+      addMessage('receiver', errorMsg);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [sender, receiver, conversationSummary, setLoading, setError, addMessage]);
+
   return {
     sendSenderMessage,
     sendReceiverMessage,
     generateSummary,
+    startReceiverConversation,
   };
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useConversation } from '@/hooks/useConversation';
 import { hasLLMConfig } from '@/config/llm';
@@ -23,8 +23,19 @@ export default function App() {
     reset,
   } = useAppStore();
 
-  const { sendSenderMessage, sendReceiverMessage, generateSummary } = useConversation();
+  const { sendSenderMessage, sendReceiverMessage, generateSummary, startReceiverConversation } = useConversation();
   const [isGenerating, setIsGenerating] = useState(false);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (phase === 'receiving' && !startedRef.current) {
+      startedRef.current = true;
+      startReceiverConversation();
+    }
+    if (phase !== 'receiving') {
+      startedRef.current = false;
+    }
+  }, [phase, startReceiverConversation]);
 
   const handleStyleConfirm = useCallback(
     (personality: Personality, customDesc: string) => {
@@ -98,33 +109,26 @@ export default function App() {
           <div className="phone-frame">
             <div className="phone-notch" />
             <div className={`phone-screen ${phase === 'receiving' ? '' : 'phone-locked'}`}>
-              {phase === 'idle' || phase === 'sending' ? (
-                <div className="waiting-screen">
-                  <div className="waiting-avatar" />
-                  <p className="waiting-text">等待消息传入...</p>
-                </div>
-              ) : (
-                <ChatPanel
-                  side="receiver"
-                  userName={receiver.name}
-                  avatarName="数字人"
-                  messages={receiver.messages}
-                  isActive={phase === 'receiving'}
-                  isLoading={isLoading}
-                  showEndButton={false}
-                  showSendButton={phase === 'receiving'}
-                  isThinking={receiverThinking}
-                  placeholder="说点什么..."
-                  onSend={sendReceiverMessage}
-                >
-                  {showNotification && shareInfo && (
-                    <NotificationBanner
-                      shareInfo={shareInfo}
-                      onDismiss={() => {}}
-                    />
-                  )}
-                </ChatPanel>
-              )}
+              <ChatPanel
+                side="receiver"
+                userName={receiver.name}
+                avatarName="数字人"
+                messages={receiver.messages}
+                isActive={phase === 'receiving'}
+                isLoading={isLoading}
+                showEndButton={false}
+                showSendButton={phase === 'receiving'}
+                isThinking={receiverThinking}
+                placeholder={phase === 'receiving' ? '说点什么...' : '等待小美分享对话...'}
+                onSend={sendReceiverMessage}
+              >
+                {showNotification && shareInfo && (
+                  <NotificationBanner
+                    shareInfo={shareInfo}
+                    onDismiss={() => {}}
+                  />
+                )}
+              </ChatPanel>
             </div>
             <div className="device-label">{receiver.name} · 接收端</div>
           </div>
