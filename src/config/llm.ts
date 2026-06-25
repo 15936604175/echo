@@ -3,7 +3,7 @@ import type { LLMConfig } from '@/types';
 const STORAGE_KEY = 'echo_llm_config';
 
 const DEFAULT_CONFIG: LLMConfig = {
-  endpoint: '/api/chat/completions',
+  endpoint: 'https://opencode.ai/zen/go/v1/chat/completions',
   apiKey: 'sk-syMrRl2g5NydIYHN7s3NTV8sOvDk31DHTteMWMymVL1wKp84KDOuJTGvQgpu8pPl',
   model: 'deepseek-v4-flash',
 };
