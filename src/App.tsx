@@ -6,6 +6,7 @@ import { AppHeader } from '@/components/layout/AppHeader';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { StyleSelector } from '@/components/sender/StyleSelector';
 import { ShareModal } from '@/components/chat/ShareModal';
+import { OpeningAnimation } from '@/components/OpeningAnimation';
 import { getDemoSenderScript, getDemoReceiverScript, demoStepToMessage } from '@/data/demoScript';
 import type { Personality } from '@/types';
 
@@ -13,6 +14,8 @@ const SENDER_MODEL = 'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/te
 const RECEIVER_MODEL = 'https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json';
 
 export default function App() {
+  const [showOpening, setShowOpening] = useState(true);
+  
   const {
     phase,
     sender,
@@ -145,7 +148,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <AppHeader />
+      {showOpening && <OpeningAnimation onComplete={() => setShowOpening(false)} />}
+      
+      {!showOpening && (
+        <>
+          <AppHeader />
 
       <main className="app-main">
         <div className="phones-container">
@@ -225,6 +232,8 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
